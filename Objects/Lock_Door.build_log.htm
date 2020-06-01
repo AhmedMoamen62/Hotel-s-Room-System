@@ -1,0 +1,148 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.29.0.0
+Copyright (C) 2019 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Shreef Mohamed , Ain shams university, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.29.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.29.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      lmidk-agdi.dll V???
+Dialog DLL:      TCM.DLL V1.36.5.0
+ 
+<h2>Project:</h2>
+D:\courses\Embedded Systems\Tiva C\Password-Based-DoorLock-system\Lock_Door.uvprojx
+Project File Date:  04/02/2020
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Target 1'
+compiling main.c...
+LCD/lcd.h(51): warning:  #1295-D: Deprecated declaration LCD_Clear - give arg types
+  void LCD_Clear();
+LCD/lcd.h(57): warning:  #1295-D: Deprecated declaration LCD_Shift_Cursor_Left - give arg types
+  void LCD_Shift_Cursor_Left();
+LCD/lcd.h(58): warning:  #1295-D: Deprecated declaration LCD_Shift_Cursor_Right - give arg types
+  void LCD_Shift_Cursor_Right();
+LCD/lcd.h(59): warning:  #1295-D: Deprecated declaration LCD_Shift_Cursor_Up - give arg types
+  void LCD_Shift_Cursor_Up();
+LCD/lcd.h(60): warning:  #1295-D: Deprecated declaration LCD_Shift_Cursor_Down - give arg types
+  void LCD_Shift_Cursor_Down();
+LCD/lcd.h(62): warning:  #1295-D: Deprecated declaration LCD_Back - give arg types
+  void LCD_Back();
+LCD/lcd.h(63): warning:  #1295-D: Deprecated declaration LCD_Blink - give arg types
+  void LCD_Blink();
+Keypad/keypad.h(39): warning:  #1-D: last line of file ends without a newline
+  #endif
+GPIO_Drivers/EEPROM.h(12): warning:  #1-D: last line of file ends without a newline
+  #endif
+UART/uart.h(113): warning:  #1-D: last line of file ends without a newline
+  #endif
+main.c(16): warning:  #1295-D: Deprecated declaration UART_Config - give arg types
+  void UART_Config(); 
+main.c(18): warning:  #1295-D: Deprecated declaration password_approved - give arg types
+  void password_approved();
+main.c(19): warning:  #1295-D: Deprecated declaration Login - give arg types
+  void Login();
+main.c(22): warning:  #1295-D: Deprecated declaration gpio_config - give arg types
+  void gpio_config();
+main.c(23): warning:  #1295-D: Deprecated declaration setupHW - give arg types
+  void setupHW();
+main.c(89): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+          getPassword(pw_arr);
+main.c(62): warning:  #177-D: variable "flag"  was declared but never referenced
+  	uint16_t flag=1;
+main.c(127): warning:  #188-D: enumerated type mixed with another type
+  					return 0;
+main.c(130): warning:  #188-D: enumerated type mixed with another type
+  	return 1;
+main.c(152): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
+  					Login_Validation((uint8_t*)pw_arr,(uint8_t*)room.pw)?printmsg("SUCCESS\r\n"):printmsg("FALIED\r\n");
+main.c(152): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
+  					Login_Validation((uint8_t*)pw_arr,(uint8_t*)room.pw)?printmsg("SUCCESS\r\n"):printmsg("FALIED\r\n");
+main.c(183): warning:  #111-D: statement is unreachable
+  	Login_Validation(pw_arr,room.pw)?printmsg("SUCCESS\r\n"):printmsg("FALIED\r\n");
+main.c(183): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
+  	Login_Validation(pw_arr,room.pw)?printmsg("SUCCESS\r\n"):printmsg("FALIED\r\n");
+main.c(219): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
+  					if( Login_Validation(password1,password2) )
+main.c(219): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
+  					if( Login_Validation(password1,password2) )
+main.c(340): warning:  #188-D: enumerated type mixed with another type
+  	portApin2.AlternateFunctionSelect = 0;
+main.c(341): warning:  #188-D: enumerated type mixed with another type
+  	portApin2.AnalogModeSelect = 0;
+main.c(342): warning:  #188-D: enumerated type mixed with another type
+  	portApin2.Commit = 1;
+main.c(343): warning:  #188-D: enumerated type mixed with another type
+  	portApin2.DigitalEnable = 1;
+main.c(344): warning:  #188-D: enumerated type mixed with another type
+  	portApin2.Direction = Output;
+main.c(345): warning:  #188-D: enumerated type mixed with another type
+  	portApin2.Lock = 1;
+main.c(347): warning:  #188-D: enumerated type mixed with another type
+  	portApin2.PullDownSelect = 0;
+main.c(348): warning:  #188-D: enumerated type mixed with another type
+  	portApin2.PullUpSelect = 0;
+main.c(355): warning:  #188-D: enumerated type mixed with another type
+  	portDpin3.AlternateFunctionSelect = 0;
+main.c(356): warning:  #188-D: enumerated type mixed with another type
+  	portDpin3.AnalogModeSelect = 0;
+main.c(357): warning:  #188-D: enumerated type mixed with another type
+  	portDpin3.Commit = 1;
+main.c(358): warning:  #188-D: enumerated type mixed with another type
+  	portDpin3.DigitalEnable = 1;
+main.c(359): warning:  #188-D: enumerated type mixed with another type
+  	portDpin3.Direction = Output;
+main.c(361): warning:  #188-D: enumerated type mixed with another type
+  	portDpin3.PullDownSelect = 0;
+main.c(362): warning:  #188-D: enumerated type mixed with another type
+  	portDpin3.PullUpSelect = 0;
+main.c(413): warning:  #1-D: last line of file ends without a newline
+  }
+main.c: 41 warnings, 0 errors
+linking...
+Program Size: Code=17256 RO-data=1272 RW-data=36 ZI-data=652  
+".\Objects\Lock_Door.axf" - 0 Error(s), 41 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.6.0.pack
+                ARM.CMSIS.5.6.0
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.3.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.TM4C_DFP.1.1.0.pack
+                Keil.TM4C_DFP.1.1.0
+                Texas Instruments Tiva C Series Device Support and Examples
+   * Component: Startup Version: 1.0.1
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_Target_1
+  C:\Users\LENOVO\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include
+  C:\Users\LENOVO\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.3.0
+
+   * Component: Keil::Device:Startup:1.0.1
+      Include file:  Device\Include\TM4C123\TM4C123.h
+      Source file:   Device\Source\system_TM4C123.c
+      Source file:   Device\Source\ARM\startup_TM4C123.s
+Build Time Elapsed:  00:00:00
+</pre>
+</body>
+</html>
