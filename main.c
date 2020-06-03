@@ -6,7 +6,6 @@
 #include "Keypad/keypad.h"
 #include "tm4c123gh6pm.h"
 #include "GPIO_Drivers/GPIO.h"
-#include "GPIO_Drivers/EEPROM.h"
 #include "GPIO_Drivers/Data_Type.h"
 #include "UART/uart.h" 
 #define PASSWORD_SIZE 4
@@ -22,9 +21,17 @@ bool Login_Validation(char * pw_arr , char* pw_true);
 void gpio_config();
 void setupHW();
 void printmsg(char *format,...);
+void roomFree_Handling();
+uint8_t getRoomNumber(); 
+void changeRoomStatus();
+void changeRoomPW();
+void roomOccupied_Handling(); 
+void roomCleaning_Handling(); 
+void openDoor();
+void closeDoor(); 
 //void EEPROM_FillPassword(char* password);
 //void uint32_tToChar(char*,uint8_t,uint32_t);
-//void buzzer();
+void buzzer();
 //void LCD_correct();
 //uint32_t Pow(uint32_t,uint32_t);
 //int32_t charToint(char * arr);
@@ -39,7 +46,7 @@ void printmsg(char *format,...);
 /************************** HANDLE STRUCTS ********************************/ 
 UART_HandleTypedef huart ; 
 GPIO_HandlingPin portApin2;
-GPIO_HandlingPin portDpin3;
+GPIO_HandlingPin portFpin3;
 
 /************************** GLOBAL VARIABLES *******************************/
 char pw_true[PASSWORD_SIZE];
@@ -61,55 +68,54 @@ int main()
 	LCD_Init();
 	uint16_t flag=1;
 	char pw_arr[4];
-	
+	LCD_Clear();
 	printmsg("\t\tWelcome to The Hotel\r\n"); 
-	// Testing UART 
-	/*
-	char UART_test[10] = "hello\r\n"; 
-	uint8_t count = 0 ; 
-	while (count<5) 
-	{
-		UART4_trasnmitString(UART_test);
-		delay_m(30); 
-		count++ ;
-	}
-	uint8_t test= UART4_receiveChar(); 
-	UART4_trasnmitChar(test);
-	*/
+
 	// filling the Global struct
 	setupHW(); 
+
 	while(1)
 	{
-		uint8_t key=KeyPad_getPressedKey(); 
-		printmsg("\r\nthe pressed key is %c\r\n",key); 
-		delay_m(300);
-		
-				LCD_Write_String("Enter Password");
-				LCD_Set_Cursor_Position(1,6);
-        getPassword(pw_arr);
-		/*
-			  int32_t data = EEPROM_ReadData(0,0);
-				uint32_tToChar(pw_true,4,data);
-				//uint32_tToChar(pw_true,4,load_pass);
-				bool valid = Login_Validation(pw_arr,pw_true);
-				if(valid)
+			if(room.room_state==ROOM_OCCUPIED)
+			{
+				while(1)
 				{
+					getPassword(pw_arr);
 					LCD_Clear();
-					LCD_Write_String_Position(0,3,"CORRECT");
-					LCD_correct();
-					LCD_Blink();
-					delay_m(500);
-					Login();
+					if(Login_Validation(pw_arr,room.pw))
+					{
+						LCD_Write_String("SUCCESS");
+						delay_m(1000);
+						break  ; 
+					}
+					else
+					{
+						LCD_Write_String("FALIED");
+						delay_m(1000); 
+						LCD_Clear(); 
+						LCD_Write_String("Enter Password");
+						LCD_Set_Cursor_Position(1,0); 
+					}
 				}
-				else 
-				{
-					LCD_Clear();					
-					LCD_Write_String_Position(0,3,"INCORRECT");
-					buzzer();
-					LCD_Blink();
-					LCD_Clear();					
-				}
-				*/
+					roomOccupied_Handling();
+			}
+				 
+			while(room.number!=getRoomNumber())
+			{
+				printmsg("\r\nINVALID Room Number\r\n");
+			}
+		switch (room.room_state)
+		{
+			case ROOM_FREE 		 : roomFree_Handling(); 
+											break ; 
+			case ROOM_OCCUPIED : roomOccupied_Handling(); 
+											break ;
+			case ROOM_CLEANING : roomCleaning_Handling(); 
+											break ; 	
+			default : roomFree_Handling(); 
+										
+		}
+		
 				
 	}
 }
@@ -133,9 +139,12 @@ bool Login_Validation(char * pw_arr , char* pw_true)
 void getPassword(uint8_t * pw_arr)
 {	
 	uint16_t i=0;
-	char space_counter = 0; 
+	char space_counter = 0;
+		LCD_Clear(); 
+		LCD_Write_String("Enter Password");
+		LCD_Set_Cursor_Position(1,0); 
 	while(1)
-	{			
+	{		
 			char x=KeyPad_getPressedKey();
 			printmsg("\r\nthe pressed key is %c and i=%d\r\n",x,i);
 			if (x == '/' && i == PASSWORD_SIZE )
@@ -149,8 +158,10 @@ void getPassword(uint8_t * pw_arr)
 					space_counter = 0;
 				}
 				else
-					Login_Validation((uint8_t*)pw_arr,(uint8_t*)room.pw)?printmsg("SUCCESS\r\n"):printmsg("FALIED\r\n");
+				{
 					return;
+				}
+					
 			}
 			
 			else if (x =='.'&& i > 0 )
@@ -172,7 +183,7 @@ void getPassword(uint8_t * pw_arr)
 
 			else if( ( x >= '0' && x <= '9' ) && i < PASSWORD_SIZE  ) 
 			{
-				LCD_Write_Char(x);
+				LCD_Write_Char('*'); 
 				pw_arr[i]=x;
 				i++; 
 				space_counter++;
@@ -180,28 +191,14 @@ void getPassword(uint8_t * pw_arr)
 
 			delay_m(1000);
 	}
-	Login_Validation(pw_arr,room.pw)?printmsg("SUCCESS\r\n"):printmsg("FALIED\r\n");
 }
 
 void Login()
 {
-		LCD_Clear();
-		LCD_Write_String_Position(0,0,"1-Open");
-		LCD_Write_String_Position(0,8,"2-Close");
-		LCD_Write_String_Position(1,0,"3-Reset Password");
 	
 		while(1)
 		{
-			char c = KeyPad_getPressedKey();
-			if (c =='1'){
-				GPIO_PORTA_APB_DATA_PIN2 = 0x04;
-			}
-			else if ( c == '2')
-			{
-				GPIO_PORTA_APB_DATA_PIN2 = 0x00;				
-			}
-			else if(c == '3')
-			{
+
 					uint8_t password1[PASSWORD_SIZE] , password2[PASSWORD_SIZE];
 					
 					// get the password first time ... clear, write in the first line , set the cursor to the password position , get the password
@@ -229,29 +226,18 @@ void Login()
 					{
 								LCD_Clear();
 								LCD_Write_String("Passwords is not Matched");
-								//buzzer();
+								buzzer();
 								LCD_Blink();
 								LCD_Clear();
-								LCD_Write_String_Position(0,0,"1-Open");
-								LCD_Write_String_Position(0,8,"2-Close");
-								LCD_Write_String_Position(1,0,"3-Reset Password");								
+								return ; 
 					}
 									
 			}
 
-		}
+		
 }
 
-/*
-void EEPROM_FillPassword(char* password)
-{
-	for(int i =0 ; i < PASSWORD_SIZE ; i++)
-	{
-		pw_true[i] = password[i];
-	}
-	EEPROM_WriteData(0,0,charToint(password) );
-}
-*/
+
 void UART_Config()
 {
 
@@ -265,74 +251,24 @@ void UART_Config()
 	huart.ReceiveEnable= RECEIVE_ENABLE;
 }
 
-/*
+
+
 void buzzer()
 {
-	GPIO_PORTD_APB_DATA_PIN3 = 0x08;
+	GPIO_PORTF_APB_DATA_PIN3 = 0x08;
 	delay_m(400);
-	GPIO_PORTD_APB_DATA_PIN3 = 0x00;
+	GPIO_PORTF_APB_DATA_PIN3 = 0x00;
 	delay_m(500);
-	GPIO_PORTD_APB_DATA_PIN3 = 0x08;
+	GPIO_PORTF_APB_DATA_PIN3 = 0x08;
   delay_m(700);
-	GPIO_PORTD_APB_DATA_PIN3 = 0x00;
+	GPIO_PORTF_APB_DATA_PIN3 = 0x00;
 	delay_m(500);
-	GPIO_PORTD_APB_DATA_PIN3 = 0x08;
+	GPIO_PORTF_APB_DATA_PIN3 = 0x08;
   delay_m(700);
-	GPIO_PORTD_APB_DATA_PIN3 = 0x00;
+	GPIO_PORTF_APB_DATA_PIN3 = 0x00;
 }
-*/
-/*
-void LCD_correct()
-{
-	LCD_Write_Command(0b01000000);
-	LCD_Write_Char(0);
-	LCD_Write_Char(0);
-	LCD_Write_Char(0);
-	LCD_Write_Char(0);
-	LCD_Write_Char(1);
-	LCD_Write_Char(2);
-	LCD_Write_Char(20);
-	LCD_Write_Char(8);
-	LCD_Write_Command(0b10000000);
-	LCD_Write_Char(0);
-}
-*/
 
-/*
-void uint32_tToChar(char* arr,uint8_t size,uint32_t data)
-{
-	for(uint8_t i = 0; i<size;i=i+1)
-	{
-		arr[i] = (data/(Pow((size-i-1),10))) + '0';
-		data = data%(Pow((size-i-1),10));
-	}
-}
-*/
-/*
-uint32_t Pow(uint32_t power,uint32_t base)
-{
-	uint32_t x = 1;
-	for(uint32_t i = 0;i<power;i=i+1)
-	{
-		x = x * base;
-	}
-	return x;
-}
-*/
-/*
-int32_t charToint(char * arr)
-{
-	int32_t data = 0 ;
-	
-	for(uint8_t i =0;i<PASSWORD_SIZE;i++)
-	{
-		data += (arr[i] - '0')*(Pow((PASSWORD_SIZE-i-1),10));
-	}
 
-	return data;
-	
-}
-*/
 void gpio_config()
 {
 
@@ -351,18 +287,18 @@ void gpio_config()
 	GPIO_InitialPin(&portApin2);
 	
 
-  portDpin3.PortBase = GPIO_PORTD_APB_BASE;
-	portDpin3.AlternateFunctionSelect = 0;
-	portDpin3.AnalogModeSelect = 0;
-	portDpin3.Commit = 1;
-	portDpin3.DigitalEnable = 1;
-	portDpin3.Direction = Output;
-	portDpin3.PinNumber = 3;
-	portDpin3.PullDownSelect = 0;
-	portDpin3.PullUpSelect = 0;
-	portDpin3.PortControl = 0;
+  portFpin3.PortBase = GPIO_PORTF_APB_BASE;
+	portFpin3.AlternateFunctionSelect = 0;
+	portFpin3.AnalogModeSelect = 0;
+	portFpin3.Commit = 1;
+	portFpin3.DigitalEnable = 1;
+	portFpin3.Direction = Output;
+	portFpin3.PinNumber = 3;
+	portFpin3.PullDownSelect = 0;
+	portFpin3.PullUpSelect = 0;
+	portFpin3.PortControl = 0;
 	
-	GPIO_InitialPin(&portDpin3);
+	GPIO_InitialPin(&portFpin3);
 }
 
 void setupHW()
@@ -377,26 +313,7 @@ void setupHW()
 		// making -48 to convert the coming char numbers to int numbers
 		room.pw[i]=UART4_receiveChar();
 	}
-	
-	UART4_trasnmitString("\r\nplease Enter Room State\r\n"); 
-	room.room_state =UART4_receiveChar()-48;
-	
-	switch(room.room_state)
-	{
-		case ROOM_FREE 		: 
-													room.door_state=DOOR_CLOSED ; 
-													printmsg("\r\nRoom_number: %d \r\nRoom_status: Free \r\nDoor_status: Closed\r\n",room.number);
-										break ; 
-		case ROOM_OCCUPIED  : room.door_state=DOOR_CLOSED ; 
-													printmsg("\r\nRoom_number: %d \r\n",room.number);
-													printmsg("Room_status: Occupied \r\nDoor_status: Closed\r\n");
-										break ;
-		case ROOM_CLEANING  : room.door_state=DOOR_OPEN ;
-													printmsg("\r\nRoom_number: %d \r\nRoom_status: Cleaning \r\nDoor_status: Opened\r\n",room.number);
-										break ;
-		default: 	room.door_state=DOOR_CLOSED ; 
-													printmsg("i'm in default\r\n"); 
-	}
+	changeRoomStatus();
 }
 void printmsg(char *format,...)
 {
@@ -410,4 +327,140 @@ void printmsg(char *format,...)
 	UART4_trasnmitString(str);
 	va_end(args);
 
+}
+
+void roomFree_Handling()
+{
+	printmsg("\r\n\tROOM_FREE\r\n1-Change Room status\r\n2-Change password\r\n");
+	uint8_t user_command = UART4_receiveChar(); 
+	
+	switch(user_command)
+	{
+		case '1': changeRoomStatus();
+							break ; 
+		
+		default : changeRoomPW();
+							break ; 		
+	}
+}
+
+uint8_t getRoomNumber()
+{
+	printmsg("\r\nPlease Enter Room Number\r\n");
+	return UART4_receiveChar()-48; 
+}
+
+void changeRoomPW()
+{
+	while(1)
+	{
+			printmsg("\r\nPlease Enter the old Password\r\n"); 
+			char temp_PW[4]; 
+			uint8_t count=4 ; 
+			for(uint8_t i=0 ; i<count ; i++)
+			{
+				// making -48 to convert the coming char numbers to int numbers
+				temp_PW[i]=UART4_receiveChar();
+			}
+			if(Login_Validation(temp_PW,room.pw))
+			{
+				break ; 
+			}
+	}
+	
+	// correct old PW
+			printmsg("\r\nPlease Enter the New Password\r\n"); 
+			uint8_t count=4 ; 
+			for(uint8_t i=0 ; i<count ; i++)
+			{
+				room.pw[i]=UART4_receiveChar();
+			}
+			printmsg("\r\nSuccessful Operation Passowrd is Changed ! \r\n"); 
+}
+
+void changeRoomStatus()
+{
+	UART4_trasnmitString("\r\nplease Enter Room Status\r\n"); 
+	uint8_t temp_status =UART4_receiveChar()-48;
+	
+	switch(temp_status)
+	{
+		case ROOM_FREE 		: 	room.room_state=ROOM_FREE;
+													room.door_state=DOOR_CLOSED ; 
+													printmsg("\r\nRoom_number: %d \r\nRoom_status: Free \r\nDoor_status: Closed\r\n",room.number);
+										break ; 
+		case ROOM_OCCUPIED  : room.room_state=ROOM_OCCUPIED;
+													room.door_state=DOOR_CLOSED ; 
+													printmsg("\r\nRoom_number: %d \r\n",room.number);
+													printmsg("Room_status: Occupied \r\nDoor_status: Closed\r\n");
+										break ;
+		case ROOM_CLEANING  :	room.room_state=ROOM_CLEANING;
+													room.door_state=DOOR_OPEN ;
+													printmsg("\r\nRoom_number: %d \r\nRoom_status: Cleaning \r\nDoor_status: Opened\r\n",room.number);
+										break ;
+		default: 							room.room_state=ROOM_OCCUPIED;
+													room.door_state=DOOR_CLOSED ; 
+													printmsg("i'm in default\r\n"); 
+	}
+	
+}
+void roomCleaning_Handling()
+{
+	printmsg("\r\n\tROOM_Cleaning\r\nChange Room status\r\n");
+	changeRoomStatus();
+}
+	
+void roomOccupied_Handling()
+{
+	while(room.room_state==ROOM_OCCUPIED)
+	{
+		LCD_Clear();
+		LCD_Write_String_Position(0,0,"1-Open");
+		LCD_Write_String_Position(0,8,"2-Close");
+		LCD_Write_String_Position(1,0,"3-ResetPW");
+		LCD_Write_String_Position(1,6,"4-Clean 5-out");
+		//printmsg("\r\n\tROOM_Occupied\r\n1-Open Door\r\n2-Close Door\r\n3-Change password\r\n");
+	//	printmsg("4-Request Clean\r\n5-check out\r\n");
+		uint8_t user_command = KeyPad_getPressedKey(); 
+		printmsg("\r\nuser command is : %c\r\n",user_command);
+		switch(user_command)
+		{
+			case '1' : openDoor();
+									LCD_Clear(); 
+									LCD_Write_String("Door is opened"); 
+									delay_m(1000); 
+								break ; 
+			case '2' : closeDoor(); 
+									LCD_Clear(); 
+									LCD_Write_String("Door is closed"); 
+									delay_m(1000); 
+								break ;
+			case '3' : Login();
+								break ; 
+			case '4' :printmsg("\r\nRequest Cleaning Room Number: %d \r\n",room.number) ;
+								room.room_state=ROOM_CLEANING;
+								room.door_state=DOOR_OPEN ;
+								printmsg("\r\nRoom_number: %d \r\nRoom_status: Cleaning \r\nDoor_status: Opened\r\n",room.number);
+								LCD_Clear();
+								LCD_Write_String("Request Clean is submitted");
+								break ; 	
+			case '5' : printmsg("\r\check out Room Number: %d \r\n",room.number) ;
+								room.room_state=ROOM_FREE;
+								room.door_state=DOOR_CLOSED ;
+								printmsg("\r\nRoom_number: %d \r\nRoom_status: Free \r\nDoor_status: Closed\r\n",room.number);
+								LCD_Clear();
+								LCD_Write_String("Request Checkout is submitted");
+								break ; 		
+		}
+	}
+	
+}
+
+void openDoor()
+{
+	GPIO_PORTF_APB_DATA_PIN3 = 0x08;
+}
+void closeDoor()
+{
+	GPIO_PORTF_APB_DATA_PIN3 = 0x00;
 }

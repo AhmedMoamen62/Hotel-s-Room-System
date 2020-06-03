@@ -11,5 +11,4 @@
 .\objects\main.o: GPIO_Drivers/GPIO.h
 .\objects\main.o: GPIO_Drivers/TivaC_IO.h
 .\objects\main.o: GPIO_Drivers/Tiva_C_Ports.h
-.\objects\main.o: GPIO_Drivers/EEPROM.h
 .\objects\main.o: UART/uart.h
