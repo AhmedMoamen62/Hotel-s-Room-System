@@ -17,9 +17,9 @@
 #define CTRL_PORT_PCTL GPIO_PORTA_PCTL_R
 #define CTRL_PORT_AMSEL GPIO_PORTA_AMSEL_R
 #define CTRL_PORT_DEN GPIO_PORTA_DEN_R
-#define RS 7
-#define RW 6
-#define E  5
+#define E 	7
+#define RW 	6
+#define RS  5
 #define DB7 7
 // Commands
 #define CLEAR_COMMAND 0x01

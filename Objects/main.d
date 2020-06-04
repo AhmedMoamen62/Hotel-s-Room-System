@@ -12,3 +12,4 @@
 .\objects\main.o: GPIO_Drivers/TivaC_IO.h
 .\objects\main.o: GPIO_Drivers/Tiva_C_Ports.h
 .\objects\main.o: UART/uart.h
+.\objects\main.o: D:/courses/Embedded Systems/Tiva C/Password-Based-DoorLock-system/GPIO_Drivers/Data_Type.h
