@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include<string.h>
-#include<stdarg.h>
+#include <string.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include "LCD/lcd.h"
 #include "Keypad/keypad.h"
@@ -93,8 +93,6 @@ int main()
 						LCD_Write_String("FALIED");
 						delay_m(1000); 
 						LCD_Clear(); 
-						LCD_Write_String("Enter Password");
-						LCD_Set_Cursor_Position(1,0); 
 					}
 				}
 					roomOccupied_Handling();
@@ -146,7 +144,7 @@ void getPassword(uint8_t * pw_arr)
 	while(1)
 	{		
 			char x=KeyPad_getPressedKey();
-			printmsg("\r\nthe pressed key is %c and i=%d\r\n",x,i);
+			//printmsg("\r\nthe pressed key is %c and i=%d\r\n",x,i);
 			if (x == '/' && i == PASSWORD_SIZE )
 			{
 				if(space_counter < PASSWORD_SIZE )
@@ -198,12 +196,9 @@ void Login()
 	
 		while(1)
 		{
-
 					uint8_t password1[PASSWORD_SIZE] , password2[PASSWORD_SIZE];
-					
 					// get the password first time ... clear, write in the first line , set the cursor to the password position , get the password
 					LCD_Clear();
-					LCD_Write_String("NewPassword:");
 					LCD_Set_Cursor_Position(1,6);
 					getPassword(password1);
 				
@@ -215,7 +210,11 @@ void Login()
 
 					if( Login_Validation(password1,password2) )
 					{
-								//EEPROM_FillPassword(password1); // because password1 is ray2 
+								uint8_t count=4 ; 
+								for(uint8_t i=0 ; i<count ; i++)
+								{
+									room.pw[i]=password2[i];
+								}
 								LCD_Clear();
 								LCD_Write_String("Password Changed!");
 								LCD_Blink();
@@ -225,7 +224,7 @@ void Login()
 					else
 					{
 								LCD_Clear();
-								LCD_Write_String("Passwords is not Matched");
+								LCD_Write_String("Password is not Matched");
 								buzzer();
 								LCD_Blink();
 								LCD_Clear();
@@ -415,42 +414,57 @@ void roomOccupied_Handling()
 	while(room.room_state==ROOM_OCCUPIED)
 	{
 		LCD_Clear();
-		LCD_Write_String_Position(0,0,"1-Open");
-		LCD_Write_String_Position(0,8,"2-Close");
-		LCD_Write_String_Position(1,0,"3-ResetPW");
-		LCD_Write_String_Position(1,6,"4-Clean 5-out");
+		LCD_Write_String_Position(0,0,"1open 2close 3PW");
+		LCD_Write_String_Position(1,0,"4clean");
+		LCD_Write_String_Position(1,7,"5checkout");
 		//printmsg("\r\n\tROOM_Occupied\r\n1-Open Door\r\n2-Close Door\r\n3-Change password\r\n");
 	//	printmsg("4-Request Clean\r\n5-check out\r\n");
-		uint8_t user_command = KeyPad_getPressedKey(); 
-		printmsg("\r\nuser command is : %c\r\n",user_command);
+		char user_command = KeyPad_getPressedKey(); 
+		LCD_Clear();
+		//printmsg("\r\nuser command is : %c\r\n",user_command);
+
 		switch(user_command)
 		{
-			case '1' : openDoor();
-									LCD_Clear(); 
-									LCD_Write_String("Door is opened"); 
-									delay_m(1000); 
-								break ; 
-			case '2' : closeDoor(); 
-									LCD_Clear(); 
-									LCD_Write_String("Door is closed"); 
-									delay_m(1000); 
+			case '+' :
+								openDoor();
+								LCD_Clear();
+								LCD_Write_String("Door is opened");
+								delay_m(2000); 
+								LCD_Clear(); 
+										break ; 
+			case '-' : 
+								closeDoor(); 
+								LCD_Clear();
+								LCD_Write_String_Position(0,0,"Door is closed");
+								delay_m(2000); 
+								LCD_Clear();
 								break ;
-			case '3' : Login();
+			case '*' : Login();
 								break ; 
-			case '4' :printmsg("\r\nRequest Cleaning Room Number: %d \r\n",room.number) ;
+			case '/' :printmsg("\r\nRequest Cleaning Room Number: %d \r\n",room.number) ;
 								room.room_state=ROOM_CLEANING;
 								room.door_state=DOOR_OPEN ;
 								printmsg("\r\nRoom_number: %d \r\nRoom_status: Cleaning \r\nDoor_status: Opened\r\n",room.number);
 								LCD_Clear();
-								LCD_Write_String("Request Clean is submitted");
+								LCD_Write_String_Position(0,0,"Request Clean");
+								LCD_Write_String_Position(1,0,"is submitted");
+								LCD_Blink(); 
+								LCD_Clear();
 								break ; 	
-			case '5' : printmsg("\r\check out Room Number: %d \r\n",room.number) ;
+			case '=' : printmsg("\r\ncheck out Room Number: %d \r\n",room.number) ;
 								room.room_state=ROOM_FREE;
 								room.door_state=DOOR_CLOSED ;
 								printmsg("\r\nRoom_number: %d \r\nRoom_status: Free \r\nDoor_status: Closed\r\n",room.number);
 								LCD_Clear();
-								LCD_Write_String("Request Checkout is submitted");
-								break ; 		
+								LCD_Write_String_Position(0,0,"checkout");
+								LCD_Write_String_Position(1,0,"is submitted");
+								LCD_Blink(); 
+								LCD_Clear();
+								break ; 
+			default: 
+								LCD_Clear();
+								LCD_Write_String_Position(0,0,"Invalid Input");
+								LCD_Clear();
 		}
 	}
 	

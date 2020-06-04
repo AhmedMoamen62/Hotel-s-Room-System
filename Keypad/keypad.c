@@ -25,7 +25,7 @@ void keypad_Init(void)
 *    had been pressd and another loop to determine the row of that button. 
 *    Having these data the we could determine a unique value for each button.
 */
-uint8_t KeyPad_getPressedKey(void)
+char KeyPad_getPressedKey(void)
 {
 	uint32_t i,j;
   while(1)

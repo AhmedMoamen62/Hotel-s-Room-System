@@ -61,7 +61,7 @@ void LCD_Init(void){
 	LCD_Delay();
 	delay_m(2);
 
-LCD_Write_Command(LCD_ON); // blinking cursor , visible cursor
+  LCD_Write_Command(LCD_ON); // blinking cursor , visible cursor
 	LCD_Write_Command(RETURN_HOME); // cursor to the first point
 }
 

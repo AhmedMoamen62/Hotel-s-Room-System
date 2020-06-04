@@ -34,6 +34,6 @@
  * Function responsible for getting the pressed keypad key
  */
 void keypad_Init(void);
-uint8_t KeyPad_getPressedKey(void);
+char KeyPad_getPressedKey(void);
 
 #endif

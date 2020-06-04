@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\Lock_Door.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Lock_Door.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Jun 03 07:59:03 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Jun 04 17:19:39 2020
 <BR><P>
 <H3>Maximum Stack Usage =        324 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -545,8 +545,8 @@ Global Symbols
 <P><STRONG><a name="[13d]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[b2]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 280 + Unknown Stack Size
-<LI>Call Chain = __rt_entry_main &rArr; main &rArr; roomOccupied_Handling &rArr; Login &rArr; getPassword &rArr; printmsg &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<BR><BR>[Stack]<UL><LI>Max Depth = 264 + Unknown Stack Size
+<LI>Call Chain = __rt_entry_main &rArr; main &rArr; roomFree_Handling &rArr; changeRoomPW &rArr; printmsg &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
@@ -1850,7 +1850,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_m
 <LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Write_Command
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Login
+<BR>[Called By]<UL><LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;roomOccupied_Handling
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Login
 <LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Set_Cursor_Position
 </UL>
 
@@ -1905,8 +1906,7 @@ Global Symbols
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Clear
 <LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Blink
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getPassword
+<BR>[Called By]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getPassword
 <LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Login
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Write_String_Position
 </UL>
@@ -1976,9 +1976,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;roomOccupied_Handling
 </UL>
 
-<P><STRONG><a name="[ee]"></a>Login</STRONG> (Thumb, 108 bytes, Stack size 16 bytes, main.o(i.Login))
-<BR><BR>[Stack]<UL><LI>Max Depth = 264 + Unknown Stack Size
-<LI>Call Chain = Login &rArr; getPassword &rArr; printmsg &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<P><STRONG><a name="[ee]"></a>Login</STRONG> (Thumb, 124 bytes, Stack size 16 bytes, main.o(i.Login))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = Login &rArr; getPassword &rArr; LCD_Set_Cursor_Position &rArr; LCD_Write_String &rArr; LCD_Write_Char &rArr; LCD_Handle_Cursor &rArr; LCD_Write_Command
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getPassword
 <LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buzzer
@@ -2112,12 +2111,10 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Init
 </UL>
 
-<P><STRONG><a name="[ef]"></a>getPassword</STRONG> (Thumb, 188 bytes, Stack size 24 bytes, main.o(i.getPassword))
-<BR><BR>[Stack]<UL><LI>Max Depth = 248 + Unknown Stack Size
-<LI>Call Chain = getPassword &rArr; printmsg &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<P><STRONG><a name="[ef]"></a>getPassword</STRONG> (Thumb, 178 bytes, Stack size 24 bytes, main.o(i.getPassword))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = getPassword &rArr; LCD_Set_Cursor_Position &rArr; LCD_Write_String &rArr; LCD_Write_Char &rArr; LCD_Handle_Cursor &rArr; LCD_Write_Command
 </UL>
 <BR>[Calls]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyPad_getPressedKey
-<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printmsg
 <LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_m
 <LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Write_String
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Write_Char
@@ -2153,9 +2150,9 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[b3]"></a>main</STRONG> (Thumb, 194 bytes, Stack size 8 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 280 + Unknown Stack Size
-<LI>Call Chain = main &rArr; roomOccupied_Handling &rArr; Login &rArr; getPassword &rArr; printmsg &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<P><STRONG><a name="[b3]"></a>main</STRONG> (Thumb, 180 bytes, Stack size 8 bytes, main.o(i.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 264 + Unknown Stack Size
+<LI>Call Chain = main &rArr; roomFree_Handling &rArr; changeRoomPW &rArr; printmsg &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keypad_Init
 <LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART4_init
@@ -2171,7 +2168,6 @@ Global Symbols
 <LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Login_Validation
 <LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_m
 <LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Write_String
-<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Set_Cursor_Position
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Init
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Clear
 </UL>
@@ -2194,7 +2190,6 @@ Global Symbols
 <LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;roomCleaning_Handling
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getRoomNumber
-<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getPassword
 <LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;changeRoomStatus
 <LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;changeRoomPW
 </UL>
@@ -2221,9 +2216,9 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[108]"></a>roomOccupied_Handling</STRONG> (Thumb, 230 bytes, Stack size 8 bytes, main.o(i.roomOccupied_Handling))
-<BR><BR>[Stack]<UL><LI>Max Depth = 272 + Unknown Stack Size
-<LI>Call Chain = roomOccupied_Handling &rArr; Login &rArr; getPassword &rArr; printmsg &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
+<P><STRONG><a name="[108]"></a>roomOccupied_Handling</STRONG> (Thumb, 302 bytes, Stack size 8 bytes, main.o(i.roomOccupied_Handling))
+<BR><BR>[Stack]<UL><LI>Max Depth = 232 + Unknown Stack Size
+<LI>Call Chain = roomOccupied_Handling &rArr; printmsg &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KeyPad_getPressedKey
 <LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printmsg
@@ -2234,6 +2229,7 @@ Global Symbols
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Write_String_Position
 <LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Write_String
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Clear
+<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Blink
 </UL>
 <BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
